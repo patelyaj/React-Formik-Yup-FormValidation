@@ -16,8 +16,8 @@ export const fetchProducts = createAsyncThunk(
 );
 
 const productSlice = createSlice({
-    name : 'products',
-    initialState : {products : [],token : null , loading :false,error : null},
+    name : 'product',
+    initialState : {products : [], loading :false,error : null},
     reducers : {
       addProduct :(state,action)=> {
         state.products.push(action.payload);

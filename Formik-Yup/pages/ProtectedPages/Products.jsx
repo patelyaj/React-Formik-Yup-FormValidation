@@ -7,12 +7,12 @@ import { useNavigate } from 'react-router-dom';
 function Products() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {products} = useSelector((state) => state.product);
+    const { products } = useSelector((state) => state.product);
 
     console.log("p =",products)
-    useEffect(()=>{
+    useEffect(()=>{ 
 
-        if(products.length == 0){
+        if(products.length == 0 ){
             const res = dispatch(fetchProducts());
             console.log(" - res from dispatch fetchProducts",res);
         }

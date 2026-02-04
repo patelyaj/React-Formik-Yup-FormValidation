@@ -2,7 +2,7 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { loggedInUser } from '../src/features/auth/authSlice';
+import { loginUser } from '../src/features/auth/authSlice';
 import { useNavigate } from "react-router-dom";
 function Login() {
     const dispatch = useDispatch();
@@ -10,8 +10,8 @@ function Login() {
     const navigate = useNavigate();
     // YUP  
     const loginSchema = Yup.object({
-        username: Yup.string().required('field is required').min(2, 'Too Short!'),
-        password: Yup.string().required('field is required').min(8, 'Too Short!'),
+        username: Yup.string().required('Username is required').min(2, 'Too Short!'),
+        password: Yup.string().required('Password is required').min(8, 'Too Short!'),
     });
 
     // Formik 
@@ -24,7 +24,7 @@ function Login() {
         onSubmit: async (values) => {
             try {
                 // values = { username: '',password: ''}
-                const res = await dispatch(loggedInUser(values)).unwrap();
+                const res = await dispatch(loginUser(values)).unwrap();
                 console.log("res",res);
                 navigate('/products')
             } catch (error) {
@@ -39,7 +39,7 @@ function Login() {
                 <h1>Login</h1>
 
                 {/* 1. Error Display */}
-                {error && <div className="api-error">{error}</div>}
+                {error && <div className="api-error-message">{error}</div>}
 
                 <form onSubmit={formik.handleSubmit}>   
                     <div className="input-group">
@@ -50,7 +50,7 @@ function Login() {
                         />
 
                         {formik.submitCount > 0 &&  formik.errors.username && (
-                        <p className="error" style={{color:'red'}}>{formik.errors.username}</p>
+                        <p className="required-field-error" style={{color:'red'}}>{formik.errors.username}</p>
                         )}
                     </div>
 
@@ -63,7 +63,7 @@ function Login() {
                         />
 
                         {formik.submitCount > 0 && formik.errors.password && (
-                        <p className="error">{formik.errors.password}</p>
+                        <p className="required-field-error">{formik.errors.password}</p>
                         )}
                     </div>
 

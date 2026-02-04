@@ -19,7 +19,7 @@ function Form() {
     const productToEdit = id ? allProducts.find(p => p.id == id) : null;
 
 
-    const emptyforadd = {
+    const initialFormValues = {
             title: '',
             brand: '',
             category: '',
@@ -45,18 +45,18 @@ function Form() {
 
     const formik = useFormik({
         // match the names in your input fields
-        initialValues: productToEdit || emptyforadd,
+        initialValues: productToEdit || initialFormValues,
 
         enableReinitialize: true,
 
         // Validate inputs 
         validationSchema: Yup.object({
             title: Yup.string().required('Title is required'),
-            brand: Yup.string().required(),
-            category: Yup.string().required(),
+            brand: Yup.string().required('Brand is required'),
+            category: Yup.string().required('Category is required'),
             price: Yup.number().min(0, 'Price must be positive').required(),
             discountPercentage: Yup.number().min(0).max(100),
-            stock: Yup.number().min(0).required(),
+            stock: Yup.number().min(0).required('Stock is required'),
             minimumOrderQuantity: Yup.number().min(1),
             sku: Yup.string().required('SKU is required'),
             weight: Yup.number().positive(),
@@ -79,9 +79,9 @@ function Form() {
                 // add
                 console.log("Adding New Product:", values);
 
-                const newprod = {id:nanoid(),...values};
+                const newProduct = {id:nanoid(),...values};
                 
-                dispatch(addProduct(newprod)); 
+                dispatch(addProduct(newProduct)); 
             }
             
             navigate('/products');
@@ -105,7 +105,7 @@ function Form() {
                 <h3>Basic Details</h3>
                 <div>
                     <label>Title: </label>
-                    <input type="text" {...formik.getFieldProps('title')} />
+                    <input type="text" placeholder="e.g. Samsung Galaxy S24" {...formik.getFieldProps('title')} />
                     {formik.submitCount > 0 && formik.errors.title ? (
                         <div style={{ color: 'red' }}>{formik.errors.title}</div>
                     ) : null}
@@ -118,7 +118,7 @@ function Form() {
                 </div>
                 <div>
                     <label>Brand: </label>
-                    <input type="text" {...formik.getFieldProps('brand')} />
+                    <input type="text" placeholder="e.g. Samsung" {...formik.getFieldProps('brand')} />
                     {formik.submitCount > 0 && formik.errors.brand ? (
                         <div style={{ color: 'red' }}>{formik.errors.brand}</div>
                     ) : null}
@@ -126,14 +126,14 @@ function Form() {
 
                 <div>
                     <label>Category: </label>
-                    <input type="text" {...formik.getFieldProps('category')} />
+                    <input type="text" placeholder="e.g. Smartphones" {...formik.getFieldProps('category')} />
                     {formik.submitCount > 0 && formik.errors.category ? (
                         <div style={{ color: 'red' }}>{formik.errors.category}</div>
                     ) : null}
                 </div>
                 <div>
                     <label>Description: </label>
-                    <textarea rows="4" cols="50" {...formik.getFieldProps('description')} />
+                    <textarea rows="4" cols="50" placeholder="Enter product description..." {...formik.getFieldProps('description')} />
                     {formik.submitCount > 0 && formik.errors.description ? (
                         <div style={{ color: 'red' }}>{formik.errors.description}</div>
                     ) : null}
@@ -144,7 +144,7 @@ function Form() {
 
                 <div>
                     <label>Price ($): </label>
-                    <input type="number" {...formik.getFieldProps('price')} />
+                    <input type="number" placeholder="0.00" {...formik.getFieldProps('price')} />
                     {formik.submitCount > 0 && formik.errors.price ? (
                         <div style={{ color: 'red' }}>{formik.errors.price}</div>
                     ) : null}
@@ -152,7 +152,7 @@ function Form() {
 
                 <div>
                     <label>Discount (%): </label>
-                    <input type="number" {...formik.getFieldProps('discountPercentage')} />
+                    <input type="number" placeholder="0" {...formik.getFieldProps('discountPercentage')} />
                     {formik.submitCount > 0 && formik.errors.discountPercentage ? (
                         <div style={{ color: 'red' }}>{formik.errors.discountPercentage}</div>
                     ) : null}
@@ -160,7 +160,7 @@ function Form() {
 
                 <div>
                     <label>Stock Quantity: </label>
-                    <input type="number" {...formik.getFieldProps('stock')} />
+                    <input type="number" placeholder="0" {...formik.getFieldProps('stock')} />
                     {formik.submitCount > 0 && formik.errors.stock ? (
                         <div style={{ color: 'red' }}>{formik.errors.stock}</div>
                     ) : null}
@@ -168,7 +168,7 @@ function Form() {
 
                 <div>
                     <label>Min Order Qty: </label>
-                    <input type="number" {...formik.getFieldProps('minimumOrderQuantity')} />
+                    <input type="number" placeholder="1" {...formik.getFieldProps('minimumOrderQuantity')} />
                     {formik.submitCount > 0 && formik.errors.minimumOrderQuantity ? (
                         <div style={{ color: 'red' }}>{formik.errors.minimumOrderQuantity}</div>
                     ) : null}
@@ -187,14 +187,14 @@ function Form() {
                 <h3>Logistics</h3>
                 <div>
                     <label>SKU: </label>
-                    <input type="text" {...formik.getFieldProps('sku')} />
+                    <input type="text" placeholder="e.g. SKU-12345" {...formik.getFieldProps('sku')} />
                     {formik.submitCount > 0 && formik.errors.sku ? (
                         <div style={{ color: 'red' }}>{formik.errors.sku}</div>
                     ) : null}
                 </div>
                 <div>
                     <label>Weight (units): </label>
-                    <input type="number" {...formik.getFieldProps('weight')} />
+                    <input type="number" placeholder="0" {...formik.getFieldProps('weight')} />
                     {formik.submitCount > 0 && formik.errors.weight ? (
                         <div style={{ color: 'red' }}>{formik.errors.weight}</div>
                     ) : null}
@@ -203,21 +203,21 @@ function Form() {
                 <h4>Dimensions</h4>
                 <div>
                     <label>Width: </label>
-                    <input type="number" {...formik.getFieldProps('dimensions.width')} />
+                    <input type="number" placeholder="0" {...formik.getFieldProps('dimensions.width')} />
                     {formik.submitCount > 0 && formik.errors.dimensions?.width ? (
                         <div style={{ color: 'red' }}>{formik.errors.dimensions.width}</div>
                     ) : null}
                 </div>
                 <div>
                     <label>Height: </label>
-                    <input type="number" {...formik.getFieldProps('dimensions.height')} />
+                    <input type="number" placeholder="0" {...formik.getFieldProps('dimensions.height')} />
                     {formik.submitCount > 0 && formik.errors.dimensions?.height ? (
                         <div style={{ color: 'red' }}>{formik.errors.dimensions.height}</div>
                     ) : null}
                 </div>
                 <div>
                     <label>Depth: </label>
-                    <input type="number" {...formik.getFieldProps('dimensions.depth')} />
+                    <input type="number" placeholder="0" {...formik.getFieldProps('dimensions.depth')} />
                     {formik.submitCount > 0 && formik.errors.dimensions?.depth ? (
                         <div style={{ color: 'red' }}>{formik.errors.dimensions.depth}</div>
                     ) : null}
@@ -227,22 +227,22 @@ function Form() {
                 <h3>Policies</h3>
                 <div>
                     <label>Warranty Info: </label>
-                    <input type="text" {...formik.getFieldProps('warrantyInformation')} />
+                    <input type="text" placeholder="e.g. 1 Year Warranty" {...formik.getFieldProps('warrantyInformation')} />
                 </div>
                 <div>
                     <label>Shipping Info: </label>
-                    <input type="text" {...formik.getFieldProps('shippingInformation')} />
+                    <input type="text" placeholder="e.g. Ships in 2 days" {...formik.getFieldProps('shippingInformation')} />
                 </div>
                 <div>
                     <label>Return Policy: </label>
-                    <input type="text" {...formik.getFieldProps('returnPolicy')} />
+                    <input type="text" placeholder="e.g. 30 days return" {...formik.getFieldProps('returnPolicy')} />
                 </div>
 
                 {/* --- IMAGES --- */}
                 <h3>Media</h3>
                 <div>
                     <label>Thumbnail URL: </label>
-                    <input type="text" style={{ width: '300px' }} {...formik.getFieldProps('thumbnail')} />
+                    <input type="text" style={{ width: '300px' }} placeholder="https://example.com/image.jpg" {...formik.getFieldProps('thumbnail')} />
                     {formik.submitCount > 0 && formik.errors.thumbnail ? (
                         <div style={{ color: 'red' }}>{formik.errors.thumbnail}</div>
                     ) : null}
